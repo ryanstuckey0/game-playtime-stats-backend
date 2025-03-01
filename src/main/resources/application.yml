@@ -1,8 +1,9 @@
 spring:
+    profiles:
+        active:
+        - minikube
     application:
         name: steam-playtime-aggregator
-    datasource:
-        url: jdbc:h2:mem:localdb
 
 steam:
     hostname: http://api.steampowered.com
