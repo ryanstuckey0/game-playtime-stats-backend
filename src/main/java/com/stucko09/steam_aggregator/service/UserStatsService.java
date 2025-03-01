@@ -7,7 +7,6 @@ import com.stucko09.steam_aggregator.model.entity.AppUser;
 import com.stucko09.steam_aggregator.model.entity.GameRecord;
 import com.stucko09.steam_aggregator.model.entity.UserOwnedGameRecord;
 import com.stucko09.steam_aggregator.model.steam.SteamGamePlaytimeRecord;
-import com.stucko09.steam_aggregator.model.steam.SteamGetOwnedGamesResponse;
 import com.stucko09.steam_aggregator.model.steam.SteamGetRecentGamesResponse;
 import com.stucko09.steam_aggregator.repository.UserOwnedGameRecordRepository;
 
@@ -24,7 +23,7 @@ public class UserStatsService {
     private UserOwnedGameRecordRepository userOwnedGameRecordRepository;
 
     public void collectAndSaveInitialPlaytimeStats(AppUser user) {
-        SteamGetOwnedGamesResponse ownedGamesResponse = steamApiService
+        SteamGetRecentGamesResponse ownedGamesResponse = steamApiService
                 .getOwnedGames(user.getSteamUserId(), user.getApiKey())
                 .getResponse();
 
