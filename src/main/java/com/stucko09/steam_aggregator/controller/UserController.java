@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stucko09.steam_aggregator.exception.UsernameTakenException;
-import com.stucko09.steam_aggregator.model.AppUser;
+import com.stucko09.steam_aggregator.model.entity.AppUser;
 import com.stucko09.steam_aggregator.model.rest.GenericResponse;
 import com.stucko09.steam_aggregator.model.rest.UserOwnedGamesResponse;
 import com.stucko09.steam_aggregator.model.rest.UserRegistrationRequest;

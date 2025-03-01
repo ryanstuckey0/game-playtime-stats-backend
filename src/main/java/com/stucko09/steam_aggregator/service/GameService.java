@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.dozermapper.core.Mapper;
-import com.stucko09.steam_aggregator.model.AppUser;
-import com.stucko09.steam_aggregator.model.GamePlaytimeRecord;
-import com.stucko09.steam_aggregator.model.GameRecord;
+import com.stucko09.steam_aggregator.model.entity.AppUser;
+import com.stucko09.steam_aggregator.model.entity.GamePlaytimeRecord;
+import com.stucko09.steam_aggregator.model.entity.GameRecord;
 import com.stucko09.steam_aggregator.model.steam.SteamGamePlaytimeRecord;
 import com.stucko09.steam_aggregator.repository.GamePlaytimeRecordRepository;
 import com.stucko09.steam_aggregator.repository.GameRecordRepository;

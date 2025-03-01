@@ -1,4 +1,4 @@
-package com.stucko09.steam_aggregator.model;
+package com.stucko09.steam_aggregator.model.entity;
 
 import com.github.dozermapper.core.Mapping;
 
