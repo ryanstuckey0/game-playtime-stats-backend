@@ -49,15 +49,13 @@ public class UserStatsService {
                 GamePlaytimeRecord playtimeRecord = isInitialPlaytimeStats
                         ? gameService.saveInitialPlaytimeRecord(steamGame, gameRecord, user)
                         : gameService.saveDailyPlaytimeRecord(steamGame, gameRecord, user);
-                updateOwnedGamePlaytime(ownedGame, playtimeRecord.getPlaytimeForever());
+                if (playtimeRecord != null)
+                    updateOwnedGamePlaytime(ownedGame, playtimeRecord.getPlaytimeForever());
             }
-
-            GamePlaytimeRecord playtimeRecord = gameService.saveDailyPlaytimeRecord(steamGame, gameRecord, user);
-            updateOwnedGamePlaytime(ownedGame, playtimeRecord.getPlaytimeForever());
         }
     }
 
-    public UserOwnedGameRecord registerNewOnwedGameForUser(AppUser user, GameRecord game) {
+    public UserOwnedGameRecord registerNewOwnedGameForUser(AppUser user, GameRecord game) {
         UserOwnedGameRecord ownedGameRecord = new UserOwnedGameRecord(user, game);
         return userOwnedGameRecordRepository.save(ownedGameRecord);
     }
@@ -72,7 +70,7 @@ public class UserStatsService {
      */
     public UserOwnedGameRecord registerGameIfNotOwnedElseRetrieve(AppUser user, GameRecord game) {
         if (!userOwnsGame(user, game)) {
-            return registerNewOnwedGameForUser(user, game);
+            return registerNewOwnedGameForUser(user, game);
         }
         return userOwnedGameRecordRepository.findByAppUserAndGameRecord(user, game);
     }

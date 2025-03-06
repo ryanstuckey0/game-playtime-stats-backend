@@ -25,6 +25,13 @@ public class GamePlaytimeRecord extends BaseRecordClass {
     private int playtimeWindowsForever;
     private int playtimeDeckForever;
 
+    private int diffPlaytimeForever;
+    private int diffPlaytime2Weeks;
+    private int diffPlaytimeLinux;
+    private int diffPlaytimeMac;
+    private int diffPlaytimeWindows;
+    private int diffPlaytimeDeck;
+
     private boolean isFirstGameEntry = false;
     private boolean isFirstUserEntry = false;
 }
