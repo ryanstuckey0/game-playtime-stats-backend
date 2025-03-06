@@ -64,7 +64,8 @@ public class GameService {
      */
     private GamePlaytimeRecord saveNewPlaytimeRecord(SteamGamePlaytimeRecord playtimeRecord, GameRecord gameRecord,
             AppUser user, boolean isFirstUserEntry) {
-        // TODO: could check isFirstUserEntry, determine which way is better
+        // TODO: could check isFirstUserEntry via DB query instead, determine which way
+        // is better
 
         GamePlaytimeRecord gamePlaytimeRecord = dozerBeanMapper.map(playtimeRecord, GamePlaytimeRecord.class);
         gamePlaytimeRecord.setGameRecord(gameRecord);
