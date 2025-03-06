@@ -36,7 +36,7 @@ public class UserOwnedGameRecord extends BaseRecordClass {
         this.appUser = appUser;
         this.gameRecord = gameRecord;
         this.dateFirstSeen = LocalDate.now();
-        playtime = -1;
+        playtime = 0;
     }
 
     /**
@@ -48,7 +48,7 @@ public class UserOwnedGameRecord extends BaseRecordClass {
      */
     public void setPlaytime(int totalPlaytime) {
         if (totalPlaytime > 0) {
-            if (playtime == -1) {
+            if (playtime == 0) {
                 dateFirstPlayed = LocalDate.now();
             }
             playtime = totalPlaytime;
