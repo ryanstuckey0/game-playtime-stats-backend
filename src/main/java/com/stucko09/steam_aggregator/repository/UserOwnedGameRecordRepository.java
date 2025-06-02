@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.stucko09.steam_aggregator.model.AppUser;
-import com.stucko09.steam_aggregator.model.GameRecord;
-import com.stucko09.steam_aggregator.model.UserOwnedGameRecord;
+import com.stucko09.steam_aggregator.model.entity.AppUser;
+import com.stucko09.steam_aggregator.model.entity.GameRecord;
+import com.stucko09.steam_aggregator.model.entity.UserOwnedGameRecord;
 
 public interface UserOwnedGameRecordRepository extends CrudRepository<UserOwnedGameRecord, Long> {
     public List<UserOwnedGameRecord> findByAppUser(AppUser appUser);

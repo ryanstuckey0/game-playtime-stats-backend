@@ -1,4 +1,4 @@
-package com.stucko09.steam_aggregator.model;
+package com.stucko09.steam_aggregator.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -24,6 +24,13 @@ public class GamePlaytimeRecord extends BaseRecordClass {
     private int playtimeMacForever;
     private int playtimeWindowsForever;
     private int playtimeDeckForever;
+
+    private int diffPlaytimeForever;
+    private int diffPlaytime2Weeks;
+    private int diffPlaytimeLinux;
+    private int diffPlaytimeMac;
+    private int diffPlaytimeWindows;
+    private int diffPlaytimeDeck;
 
     private boolean isFirstGameEntry = false;
     private boolean isFirstUserEntry = false;

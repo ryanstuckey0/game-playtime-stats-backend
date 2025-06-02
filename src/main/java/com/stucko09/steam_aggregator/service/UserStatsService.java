@@ -3,11 +3,11 @@ package com.stucko09.steam_aggregator.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.stucko09.steam_aggregator.model.AppUser;
-import com.stucko09.steam_aggregator.model.GameRecord;
-import com.stucko09.steam_aggregator.model.UserOwnedGameRecord;
+import com.stucko09.steam_aggregator.model.entity.AppUser;
+import com.stucko09.steam_aggregator.model.entity.GamePlaytimeRecord;
+import com.stucko09.steam_aggregator.model.entity.GameRecord;
+import com.stucko09.steam_aggregator.model.entity.UserOwnedGameRecord;
 import com.stucko09.steam_aggregator.model.steam.SteamGamePlaytimeRecord;
-import com.stucko09.steam_aggregator.model.steam.SteamGetOwnedGamesResponse;
 import com.stucko09.steam_aggregator.model.steam.SteamGetRecentGamesResponse;
 import com.stucko09.steam_aggregator.repository.UserOwnedGameRecordRepository;
 
@@ -24,15 +24,11 @@ public class UserStatsService {
     private UserOwnedGameRecordRepository userOwnedGameRecordRepository;
 
     public void collectAndSaveInitialPlaytimeStats(AppUser user) {
-        SteamGetOwnedGamesResponse ownedGamesResponse = steamApiService
+        SteamGetRecentGamesResponse ownedGamesResponse = steamApiService
                 .getOwnedGames(user.getSteamUserId(), user.getApiKey())
                 .getResponse();
 
-        for (SteamGamePlaytimeRecord steamGame : ownedGamesResponse.getGames()) {
-            GameRecord gameRecord = gameService.saveOrRetrieveGameRecord(steamGame);
-            registerGameIfNotOwnedElseRetrieve(user, gameRecord);
-            gameService.saveInitialPlaytimeRecord(steamGame, gameRecord, user);
-        }
+        registerGamesAndSavePlaytimeStats(user, ownedGamesResponse, true);
     }
 
     public void collectAndSaveDailyPlaytimeStats(AppUser user) {
@@ -40,14 +36,26 @@ public class UserStatsService {
                 .getRecentlyPlayedGames(user.getSteamUserId(), user.getApiKey())
                 .getResponse();
 
+        registerGamesAndSavePlaytimeStats(user, recentGamesResponse, false);
+    }
+
+    private void registerGamesAndSavePlaytimeStats(AppUser user, SteamGetRecentGamesResponse recentGamesResponse,
+            boolean isInitialPlaytimeStats) {
         for (SteamGamePlaytimeRecord steamGame : recentGamesResponse.getGames()) {
             GameRecord gameRecord = gameService.saveOrRetrieveGameRecord(steamGame);
-            registerGameIfNotOwnedElseRetrieve(user, gameRecord);
-            gameService.saveDailyPlaytimeRecord(steamGame, gameRecord, user);
+            UserOwnedGameRecord ownedGame = registerGameIfNotOwnedElseRetrieve(user, gameRecord);
+
+            if (steamGame.getPlaytimeForever() > 0) {
+                GamePlaytimeRecord playtimeRecord = isInitialPlaytimeStats
+                        ? gameService.saveInitialPlaytimeRecord(steamGame, gameRecord, user)
+                        : gameService.saveDailyPlaytimeRecord(steamGame, gameRecord, user);
+                if (playtimeRecord != null)
+                    updateOwnedGamePlaytime(ownedGame, playtimeRecord.getPlaytimeForever());
+            }
         }
     }
 
-    public UserOwnedGameRecord registerNewOnwedGameForUser(AppUser user, GameRecord game) {
+    public UserOwnedGameRecord registerNewOwnedGameForUser(AppUser user, GameRecord game) {
         UserOwnedGameRecord ownedGameRecord = new UserOwnedGameRecord(user, game);
         return userOwnedGameRecordRepository.save(ownedGameRecord);
     }
@@ -62,12 +70,20 @@ public class UserStatsService {
      */
     public UserOwnedGameRecord registerGameIfNotOwnedElseRetrieve(AppUser user, GameRecord game) {
         if (!userOwnsGame(user, game)) {
-            return registerNewOnwedGameForUser(user, game);
+            return registerNewOwnedGameForUser(user, game);
         }
         return userOwnedGameRecordRepository.findByAppUserAndGameRecord(user, game);
     }
 
     public boolean userOwnsGame(AppUser user, GameRecord game) {
         return userOwnedGameRecordRepository.existsByAppUserAndGameRecord(user, game);
+    }
+
+    private UserOwnedGameRecord updateOwnedGamePlaytime(UserOwnedGameRecord ownedGame, int newPlaytime) {
+        // check if game played recently by comparing its new time with the stored time
+        if (ownedGame.getPlaytime() != newPlaytime) {
+            ownedGame.setPlaytime(newPlaytime);
+        }
+        return userOwnedGameRecordRepository.save(ownedGame);
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.stucko09.steam_aggregator.model.AppUser;
+import com.stucko09.steam_aggregator.model.entity.AppUser;
 import com.stucko09.steam_aggregator.service.UserService;
 import com.stucko09.steam_aggregator.service.UserStatsService;
 

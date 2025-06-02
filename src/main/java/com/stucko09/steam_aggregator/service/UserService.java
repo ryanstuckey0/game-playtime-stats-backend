@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.github.dozermapper.core.Mapper;
 import com.stucko09.steam_aggregator.exception.UserDoesNotExistException;
 import com.stucko09.steam_aggregator.exception.UsernameTakenException;
-import com.stucko09.steam_aggregator.model.AppUser;
+import com.stucko09.steam_aggregator.model.entity.AppUser;
 import com.stucko09.steam_aggregator.model.rest.UserOwnedGamesResponse;
 import com.stucko09.steam_aggregator.model.rest.UserRegistrationRequest;
 import com.stucko09.steam_aggregator.repository.AppUserRepository;

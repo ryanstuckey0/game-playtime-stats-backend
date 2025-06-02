@@ -1,4 +1,4 @@
-package com.stucko09.steam_aggregator.model;
+package com.stucko09.steam_aggregator.model.entity;
 
 import com.github.dozermapper.core.Mapping;
 
@@ -19,4 +19,10 @@ public class GameRecord extends BaseRecordClass {
 
     @Column(nullable = false)
     private String name;
+
+    @Mapping("imgIconUrl")
+    private String steamGameIconUrl;
+
+    @Mapping("imgLogoUrl")
+    private String steamGameLogoUrl;
 }
