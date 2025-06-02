@@ -19,4 +19,10 @@ public class GameRecord extends BaseRecordClass {
 
     @Column(nullable = false)
     private String name;
+
+    @Mapping("imgIconUrl")
+    private String steamGameIconUrl;
+
+    @Mapping("imgLogoUrl")
+    private String steamGameLogoUrl;
 }

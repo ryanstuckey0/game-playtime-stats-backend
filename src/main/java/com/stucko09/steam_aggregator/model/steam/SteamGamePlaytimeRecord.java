@@ -20,4 +20,7 @@ public class SteamGamePlaytimeRecord {
     private int playtimeMacForever;
     private int playtimeLinuxForever;
     private int playtimeDeckForever;
+
+    private String imgIconUrl;
+    private String imgLogoUrl;
 }
