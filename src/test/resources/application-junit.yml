@@ -1,6 +1,6 @@
 spring:
     application:
-        name: steam-playtime-aggregator
+        name: statsaga
 
 steam:
     hostname: http://fakeurl.com

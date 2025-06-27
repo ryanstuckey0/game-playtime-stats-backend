@@ -1,9 +1,6 @@
 spring:
-    profiles:
-        active:
-        - minikube
     application:
-        name: steam-playtime-aggregator
-
+        name: statsaga  
 steam:
     hostname: http://api.steampowered.com
+
