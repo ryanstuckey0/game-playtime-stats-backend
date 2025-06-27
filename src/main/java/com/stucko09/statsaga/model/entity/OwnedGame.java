@@ -14,16 +14,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserOwnedGameRecord extends BaseRecordClass {
+public class OwnedGame extends BaseRecordClass {
     @ManyToOne(optional = false)
     private AppUser appUser;
 
     @ManyToOne(optional = false)
-    private GameRecord gameRecord;
+    private Game game;
 
     @Setter(AccessLevel.NONE)
     private LocalDate dateFirstPlayed;
 
+    @Setter(AccessLevel.NONE)
     private LocalDate dateLastPlayed;
 
     @Column(nullable = false, updatable = false)
@@ -32,9 +33,9 @@ public class UserOwnedGameRecord extends BaseRecordClass {
     @Setter(AccessLevel.NONE)
     private int playtime;
 
-    public UserOwnedGameRecord(AppUser appUser, GameRecord gameRecord) {
+    public OwnedGame(AppUser appUser, Game game) {
         this.appUser = appUser;
-        this.gameRecord = gameRecord;
+        this.game = game;
         this.dateFirstSeen = LocalDate.now();
         playtime = 0;
     }

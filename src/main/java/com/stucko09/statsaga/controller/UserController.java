@@ -19,21 +19,26 @@ import com.stucko09.statsaga.model.rest.OwnedGamesResponse;
 import com.stucko09.statsaga.model.rest.UserRegistrationRequest;
 import com.stucko09.statsaga.service.UserService;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
+@RequestMapping("/user")
 @RestController
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping("/users/{username}/games")
-    public List<UserOwnedGamesResponse> getGamesForUser(@PathVariable String username) {
+    @GetMapping("{username}/games")
+    public List<OwnedGamesResponse> getGamesForUser(@PathVariable String username) {
         AppUser user = userService.getUserByUsername(username);
         return userService.getOwnedGamesForUser(user);
     }
 
-    @PostMapping("/users/register")
+    @PostMapping("/register")
     public GenericResponse registerUser(@RequestBody UserRegistrationRequest requestBody)
             throws UsernameTakenException {
+        log.debug("Registering new user with username: {}", requestBody.getUsername());
         AppUser user = userService.registerUserAndSaveInitialPlaytime(requestBody, requestBody.getSteamApiKey());
         return new GenericResponse("User registered and initial playtime stats collected. New user id: " + user.getId(),
                 true);

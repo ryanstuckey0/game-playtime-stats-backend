@@ -26,7 +26,7 @@ public class UserService {
     private UserStatsService statsCollectionService;
 
     @Autowired
-    private UserOwnedGameRecordRepository userOwnedGameRecordRepository;
+    private OwnedGameRepository ownedGameRepository;
 
     @Autowired
     private Mapper dozerBeanMapper;
@@ -34,6 +34,7 @@ public class UserService {
     public AppUser registerUserAndSaveInitialPlaytime(UserRegistrationRequest userRegistrationRequest, String apiKey)
             throws UsernameTakenException {
         AppUser user = registerUser(userRegistrationRequest);
+        log.debug("Saved new user to app_user table with ID: {}", user.getId());
         if (user.getSteamUserId() != null) {
             user.setApiKey(apiKey);
             statsCollectionService.collectAndSaveInitialPlaytimeStats(user);

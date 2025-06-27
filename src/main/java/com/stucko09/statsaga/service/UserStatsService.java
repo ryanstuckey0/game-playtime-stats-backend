@@ -11,6 +11,9 @@ import com.stucko09.statsaga.model.steam.SteamGamePlaytimeRecord;
 import com.stucko09.statsaga.model.steam.SteamGetRecentGamesResponse;
 import com.stucko09.statsaga.repository.OwnedGameRepository;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service
 public class UserStatsService {
 
@@ -21,13 +24,14 @@ public class UserStatsService {
     private GameService gameService;
 
     @Autowired
-    private UserOwnedGameRecordRepository userOwnedGameRecordRepository;
+    private OwnedGameRepository ownedGameRepository;
 
     public void collectAndSaveInitialPlaytimeStats(AppUser user) {
         SteamGetRecentGamesResponse ownedGamesResponse = steamApiService
                 .getOwnedGames(user.getSteamUserId(), user.getApiKey())
                 .getResponse();
-
+        log.debug("Retrieved owned games for user and saving initial playtime stats. Count: {}",
+                () -> ownedGamesResponse.getGames().size());
         registerGamesAndSavePlaytimeStats(user, ownedGamesResponse, true);
     }
 
@@ -35,29 +39,30 @@ public class UserStatsService {
         SteamGetRecentGamesResponse recentGamesResponse = steamApiService
                 .getRecentlyPlayedGames(user.getSteamUserId(), user.getApiKey())
                 .getResponse();
-
+        log.debug("Retrieved recent games for user and saving playtime stats. Count: {}",
+                () -> recentGamesResponse.getGames().size());
         registerGamesAndSavePlaytimeStats(user, recentGamesResponse, false);
     }
 
     private void registerGamesAndSavePlaytimeStats(AppUser user, SteamGetRecentGamesResponse recentGamesResponse,
             boolean isInitialPlaytimeStats) {
         for (SteamGamePlaytimeRecord steamGame : recentGamesResponse.getGames()) {
-            GameRecord gameRecord = gameService.saveOrRetrieveGameRecord(steamGame);
-            UserOwnedGameRecord ownedGame = registerGameIfNotOwnedElseRetrieve(user, gameRecord);
+            Game game = gameService.saveOrRetrieveGame(steamGame);
+            OwnedGame ownedGame = registerGameIfNotOwnedElseRetrieve(user, game);
 
             if (steamGame.getPlaytimeForever() > 0) {
-                GamePlaytimeRecord playtimeRecord = isInitialPlaytimeStats
-                        ? gameService.saveInitialPlaytimeRecord(steamGame, gameRecord, user)
-                        : gameService.saveDailyPlaytimeRecord(steamGame, gameRecord, user);
+                Playtime playtimeRecord = isInitialPlaytimeStats
+                        ? gameService.saveInitialPlaytimeRecord(steamGame, game, user)
+                        : gameService.saveDailyPlaytimeRecord(steamGame, game, user);
                 if (playtimeRecord != null)
                     updateOwnedGamePlaytime(ownedGame, playtimeRecord.getPlaytimeForever());
             }
         }
     }
 
-    public UserOwnedGameRecord registerNewOwnedGameForUser(AppUser user, GameRecord game) {
-        UserOwnedGameRecord ownedGameRecord = new UserOwnedGameRecord(user, game);
-        return userOwnedGameRecordRepository.save(ownedGameRecord);
+    public OwnedGame registerNewOwnedGameForUser(AppUser user, Game game) {
+        OwnedGame ownedGame = new OwnedGame(user, game);
+        return ownedGameRepository.save(ownedGame);
     }
 
     /**

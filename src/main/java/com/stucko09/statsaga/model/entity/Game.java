@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class GameRecord extends BaseRecordClass {
+public class Game extends BaseRecordClass {
 
     @Mapping("appid")
     private Long steamAppId;

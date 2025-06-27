@@ -5,14 +5,14 @@ import com.github.dozermapper.core.Mapping;
 import lombok.Data;
 
 @Data
-public class UserOwnedGamesResponse {
-    @Mapping("gameRecord.name")
+public class OwnedGamesResponse {
+    @Mapping("game.name")
     private String gameName;
 
-    @Mapping("gameRecord.steamAppId")
+    @Mapping("game.steamAppId")
     private String steamAppId;
 
-    @Mapping("gameRecord.id")
+    @Mapping("game.id")
     private String gameId;
 
     @Mapping("appUser.username")

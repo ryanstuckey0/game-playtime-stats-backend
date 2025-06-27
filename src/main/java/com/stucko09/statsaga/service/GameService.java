@@ -14,7 +14,7 @@ import com.stucko09.statsaga.repository.GameRepository;
 @Service
 public class GameService {
     @Autowired
-    private GameRecordRepository gameRecordRepository;
+    private GameRepository gameRepository;
 
     @Autowired
     private GamePlaytimeRecordRepository gamePlaytimeRecordRepository;
@@ -22,31 +22,31 @@ public class GameService {
     @Autowired
     private Mapper dozerBeanMapper;
 
-    public GameRecord saveOrRetrieveGameRecord(SteamGamePlaytimeRecord steamGame) {
-        return gameRecordRepository.findBySteamAppId(steamGame.getAppid()).orElseGet(() -> {
-            GameRecord newGameRecord = dozerBeanMapper.map(steamGame, GameRecord.class);
-            return gameRecordRepository.save(newGameRecord);
+    public Game saveOrRetrieveGame(SteamGamePlaytimeRecord steamGame) {
+        return gameRepository.findBySteamAppId(steamGame.getAppid()).orElseGet(() -> {
+            Game newGame = dozerBeanMapper.map(steamGame, Game.class);
+            return gameRepository.save(newGame);
         });
     }
 
-    public GameRecord saveNewGameRecord(SteamGamePlaytimeRecord steamGame) {
-        GameRecord newGameRecord = dozerBeanMapper.map(steamGame, GameRecord.class);
-        return gameRecordRepository.save(newGameRecord);
+    public Game saveNewGame(SteamGamePlaytimeRecord steamGame) {
+        Game newGame = dozerBeanMapper.map(steamGame, Game.class);
+        return gameRepository.save(newGame);
     }
 
-    public GamePlaytimeRecord saveDailyPlaytimeRecord(SteamGamePlaytimeRecord playtimeRecord, GameRecord gameRecord,
+    public Playtime saveDailyPlaytimeRecord(SteamGamePlaytimeRecord playtimeRecord, Game game,
             AppUser user) {
-        return saveNewPlaytimeRecord(playtimeRecord, gameRecord, user, false);
+        return saveNewPlaytimeRecord(playtimeRecord, game, user, false);
     }
 
-    public GamePlaytimeRecord saveInitialPlaytimeRecord(SteamGamePlaytimeRecord playtimeRecord, GameRecord gameRecord,
+    public Playtime saveInitialPlaytimeRecord(SteamGamePlaytimeRecord playtimeRecord, Game game,
             AppUser user) {
-        return saveNewPlaytimeRecord(playtimeRecord, gameRecord, user, true);
+        return saveNewPlaytimeRecord(playtimeRecord, game, user, true);
     }
 
-    public GamePlaytimeRecord getLastPlaytimeRecord(AppUser appUser, GameRecord gameRecord) {
-        return gamePlaytimeRecordRepository.findFirstByGameRecordAndAppUserOrderByCreationTimestampDesc(
-                gameRecord,
+    public Playtime getLastPlaytimeRecord(AppUser appUser, Game game) {
+        return gamePlaytimeRecordRepository.findFirstByGameAndAppUserOrderByCreationTimestampDesc(
+                game,
                 appUser);
     }
 
@@ -56,19 +56,19 @@ public class GameService {
      * then no data is saved to the datbase.
      * 
      * @param playtimeRecord   record of playtime info from Steam
-     * @param gameRecord       game to update playtime for
+     * @param game             game to update playtime for
      * @param user             user to update playtime for
      * @param isFirstUserEntry true if this is the first time a user is registering
      * @return new playtime record, or null if there is no additional playtime since
      *         it was last saved
      */
-    private GamePlaytimeRecord saveNewPlaytimeRecord(SteamGamePlaytimeRecord playtimeRecord, GameRecord gameRecord,
+    private Playtime saveNewPlaytimeRecord(SteamGamePlaytimeRecord playtimeRecord, Game game,
             AppUser user, boolean isFirstUserEntry) {
         // TODO: could check isFirstUserEntry via DB query instead, determine which way
         // is better
 
-        GamePlaytimeRecord gamePlaytimeRecord = dozerBeanMapper.map(playtimeRecord, GamePlaytimeRecord.class);
-        gamePlaytimeRecord.setGameRecord(gameRecord);
+        Playtime gamePlaytimeRecord = dozerBeanMapper.map(playtimeRecord, Playtime.class);
+        gamePlaytimeRecord.setGame(game);
         gamePlaytimeRecord.setAppUser(user);
 
         // if first user entry, also logically the first game entry for that user
@@ -76,10 +76,10 @@ public class GameService {
         if (isFirstUserEntry) {
             gamePlaytimeRecord.setFirstUserEntry(true);
             gamePlaytimeRecord.setFirstGameEntry(true);
-        } else if (!gamePlaytimeRecordRepository.existsByGameRecordAndAppUser(gameRecord, user)) {
+        } else if (!gamePlaytimeRecordRepository.existsByGameAndAppUser(game, user)) {
             gamePlaytimeRecord.setFirstGameEntry(true);
         } else {
-            playtimeIncreased = updatePlaytimeDiffsFromPreviousEntry(gamePlaytimeRecord, user, gameRecord);
+            playtimeIncreased = updatePlaytimeDiffsFromPreviousEntry(gamePlaytimeRecord, user, game);
         }
 
         return playtimeIncreased ? gamePlaytimeRecordRepository.save(gamePlaytimeRecord) : null;
@@ -95,10 +95,10 @@ public class GameService {
      * @return {@code true} if new playtime values are > 0, else false
      */
     private boolean updatePlaytimeDiffsFromPreviousEntry(
-            GamePlaytimeRecord newPlaytimeRecord,
+            Playtime newPlaytimeRecord,
             AppUser user,
-            GameRecord game) {
-        GamePlaytimeRecord lastPlaytimeRecord = getLastPlaytimeRecord(user, game);
+            Game game) {
+        Playtime lastPlaytimeRecord = getLastPlaytimeRecord(user, game);
 
         int diffPlaytimeForever = newPlaytimeRecord.getPlaytimeForever() - lastPlaytimeRecord.getPlaytimeForever();
         if (diffPlaytimeForever == 0) {
