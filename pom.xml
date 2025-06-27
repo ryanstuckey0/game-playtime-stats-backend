@@ -6,13 +6,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.2</version>
+		<version>3.5.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.stucko09</groupId>
-	<artifactId>steam-playtime-aggregator</artifactId>
+	<artifactId>statsaga</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>steam-playtime-aggregator</name>
+	<name>statsaga</name>
 	<description>An application to aggregate</description>
 	<url />
 	<licenses>
@@ -31,7 +31,7 @@
 		<url />
 	</scm>
 	<properties>
-		<java.version>23</java.version>
+		<java.version>24</java.version>
 	</properties>
 	<dependencies>
 
@@ -79,7 +79,7 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- used in docker -->
+		<!-- used in local testing/docker -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -87,16 +87,15 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+
 		<!-- unit test dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
