@@ -6,7 +6,7 @@ import com.ryanstuckey0.statsaga.model.entity.AppUser;
 import com.ryanstuckey0.statsaga.model.entity.Playtime;
 import com.ryanstuckey0.statsaga.model.entity.Game;
 
-public interface GamePlaytimeRecordRepository extends CrudRepository<Playtime, Long> {
+public interface PlaytimeRepository extends CrudRepository<Playtime, Long> {
     public boolean existsByAppUser(AppUser appUser);
 
     public boolean existsByGameAndAppUser(Game game, AppUser appUser);

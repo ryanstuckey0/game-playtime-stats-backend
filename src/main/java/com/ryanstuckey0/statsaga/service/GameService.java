@@ -8,7 +8,7 @@ import com.ryanstuckey0.statsaga.model.entity.AppUser;
 import com.ryanstuckey0.statsaga.model.entity.Playtime;
 import com.ryanstuckey0.statsaga.model.entity.Game;
 import com.ryanstuckey0.statsaga.model.steam.SteamGamePlaytimeRecord;
-import com.ryanstuckey0.statsaga.repository.GamePlaytimeRecordRepository;
+import com.ryanstuckey0.statsaga.repository.PlaytimeRepository;
 import com.ryanstuckey0.statsaga.repository.GameRepository;
 
 @Service
@@ -17,7 +17,7 @@ public class GameService {
     private GameRepository gameRepository;
 
     @Autowired
-    private GamePlaytimeRecordRepository gamePlaytimeRecordRepository;
+    private PlaytimeRepository gamePlaytimeRecordRepository;
 
     @Autowired
     private Mapper dozerBeanMapper;
