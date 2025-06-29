@@ -5,4 +5,4 @@ spring:
         password: mydatabasepassword
 logging:
     level:
-        com.stucko09.statsaga: DEBUG
+        com.ryanstuckey0.statsaga: DEBUG
