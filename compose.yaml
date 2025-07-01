@@ -26,27 +26,20 @@ services:
       db:
         condition: service_healthy
   db:
-    image: postgres
-    restart: always
-    user: postgres
-    secrets:
-      - db-password
-    volumes:
-      - db-data:/var/lib/postgresql/data
+    image: mysql:latest
+    ports:
+      - 3306:3306
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-    expose:
-      - 5432
-    ports: ["5432:5432"]
+      - MYSQL_ROOT_PASSWORD=letmein
+      - MYSQL_DATABASE=statsaga
+      - MYSQL_USER=liquibase
+      - MYSQL_PASSWORD=letmein
+    volumes:
+      - mysql_vol:/var/lib/mysql
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: ["CMD", "mysqladmin", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD",  "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
 volumes:
-  db-data:
-secrets:
-  db-password:
-    file: db/password.txt
-
+  mysql_vol: 
