@@ -4,8 +4,8 @@ spring:
     username: backend_user
     password: letmein
   jpa:
-    hibernate:
-      ddl-auto: validate
     properties:
         hibernate:
             default_schema: statsaga
+    hibernate:
+      ddl-auto: validate
