@@ -1,6 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:mysql://db:3306/statsaga?user=liquibase&password=letmein
-logging:
-  level:
-    com.ryanstuckey0.statsaga: DEBUG

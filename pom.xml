@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ryanstuckey0</groupId>
-	<artifactId>statsaga</artifactId>
+	<artifactId>stat-saga-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>statsaga</name>
-	<description>An application to aggregate</description>
+	<name>stat-saga-backend</name>
+	<description>An application to aggregate video game stats, allowing them to be graphed for the user or used in statistical analysis.</description>
 	<url />
 	<licenses>
 		<license />

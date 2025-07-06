@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:mysql://rp5:30001/statsaga
+    username: backend_user
+    password: letmein
