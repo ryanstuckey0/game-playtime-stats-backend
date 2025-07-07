@@ -17,6 +17,7 @@ import com.ryanstuckey0.statsaga.model.entity.AppUser;
 import com.ryanstuckey0.statsaga.model.rest.GenericResponse;
 import com.ryanstuckey0.statsaga.model.rest.OwnedGamesResponse;
 import com.ryanstuckey0.statsaga.model.rest.UserRegistrationRequest;
+import com.ryanstuckey0.statsaga.model.rest.UserRegistrationResponse;
 import com.ryanstuckey0.statsaga.service.UserService;
 
 import lombok.extern.log4j.Log4j2;
@@ -36,12 +37,13 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public GenericResponse registerUser(@RequestBody UserRegistrationRequest requestBody)
+    public UserRegistrationResponse registerUser(@RequestBody UserRegistrationRequest requestBody)
             throws UsernameTakenException {
         log.debug("Registering new user with username: {}", requestBody.getUsername());
-        AppUser user = userService.registerUserAndSaveInitialPlaytime(requestBody, requestBody.getSteamApiKey());
-        return new GenericResponse("User registered and initial playtime stats collected. New user id: " + user.getId(),
-                true);
+        AppUser user = userService.registerUser(requestBody);
+        // TODO: API or DB write here to tell batch service to collect initial playtime
+        // stats
+        return new UserRegistrationResponse(user.getId());
     }
 
     @ExceptionHandler({ UsernameTakenException.class })

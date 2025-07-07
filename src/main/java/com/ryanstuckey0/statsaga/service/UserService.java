@@ -23,23 +23,17 @@ public class UserService {
     private AppUserRepository appUserRepository;
 
     @Autowired
-    private UserStatsService statsCollectionService;
-
-    @Autowired
     private OwnedGameRepository ownedGameRepository;
 
     @Autowired
     private Mapper dozerBeanMapper;
 
-    public AppUser registerUserAndSaveInitialPlaytime(UserRegistrationRequest userRegistrationRequest, String apiKey)
-            throws UsernameTakenException {
-        AppUser user = registerUser(userRegistrationRequest);
-        log.debug("Saved new user to app_user table with ID: {}", user.getId());
-        if (user.getSteamUserId() != null) {
-            user.setApiKey(apiKey);
-            statsCollectionService.collectAndSaveInitialPlaytimeStats(user);
-            log.info("User registered and initial playtime stats collected.");
+    public AppUser registerUser(UserRegistrationRequest request) throws UsernameTakenException {
+        if (appUserRepository.existsByUsername(request.getUsername())) {
+            throw new UsernameTakenException(request.getUsername());
         }
+        AppUser user = appUserRepository.save(new AppUser(request));
+        log.debug("Saved new user to app_user table with ID: {}", user.getId());
         return user;
     }
 
@@ -67,12 +61,5 @@ public class UserService {
 
     public AppUser getUserByUsername(String username) {
         return appUserRepository.findByUsername(username);
-    }
-
-    public AppUser registerUser(UserRegistrationRequest request) throws UsernameTakenException {
-        if (appUserRepository.existsByUsername(request.getUsername())) {
-            throw new UsernameTakenException(request.getUsername());
-        }
-        return appUserRepository.save(new AppUser(request));
     }
 }
