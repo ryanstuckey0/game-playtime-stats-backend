@@ -1,0 +1,65 @@
+package com.statsaga.backend.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.dozermapper.core.Mapper;
+import com.statsaga.backend.exception.UserDoesNotExistException;
+import com.statsaga.backend.exception.UsernameTakenException;
+import com.statsaga.backend.model.entity.AppUser;
+import com.statsaga.backend.model.rest.OwnedGamesResponse;
+import com.statsaga.backend.model.rest.UserRegistrationRequest;
+import com.statsaga.backend.repository.AppUserRepository;
+import com.statsaga.backend.repository.OwnedGameRepository;
+
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
+@Service
+public class UserService {
+    @Autowired
+    private AppUserRepository appUserRepository;
+
+    @Autowired
+    private OwnedGameRepository ownedGameRepository;
+
+    @Autowired
+    private Mapper dozerBeanMapper;
+
+    public AppUser registerUser(UserRegistrationRequest request) throws UsernameTakenException {
+        if (appUserRepository.existsByUsername(request.getUsername())) {
+            throw new UsernameTakenException(request.getUsername());
+        }
+        AppUser user = appUserRepository.save(new AppUser(request));
+        log.debug("Saved new user to app_user table with ID: {}", user.getId());
+        return user;
+    }
+
+    public AppUser retrieveUser(Long steamId) {
+        AppUser user = appUserRepository.findBySteamUserId(steamId);
+        if (user == null)
+            throw new UserDoesNotExistException(steamId);
+        return user;
+    }
+
+    public List<OwnedGamesResponse> getOwnedGamesForUser(AppUser user) {
+        return ownedGameRepository
+                .findByAppUser(user)
+                .stream()
+                .map(
+                        ownedGame -> {
+                            return dozerBeanMapper.map(ownedGame, OwnedGamesResponse.class);
+                        })
+                .toList();
+    }
+
+    public boolean userIsRegistered(Long steamId) {
+        return appUserRepository.existsBySteamUserId(steamId);
+    }
+
+    public AppUser getUserByUsername(String username) {
+        return appUserRepository.findByUsername(username);
+    }
+}

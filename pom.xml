@@ -9,7 +9,7 @@
 		<version>3.5.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.ryanstuckey0</groupId>
+	<groupId>com.statsaga.backend</groupId>
 	<artifactId>stat-saga-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>stat-saga-backend</name>
